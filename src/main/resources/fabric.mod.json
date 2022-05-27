@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "screenscale",
+  "version": "${version}",
+  "name": "GUI scale Mod",
+  "description": "GUI Scale adds a seperate UI scale slider for menus",
+  "authors": [
+    "Someaddons"
+  ],
+  "contact": {
+    "homepage": "",
+    "sources": ""
+  },
+
+  "license": "ARR",
+  "icon": "assets/modid/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.screenscale.ScreenScale"
+    ]
+  },
+  "mixins": [
+    "screenscale.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.11.3",
+    "fabric": "*",
+    "minecraft": "1.18.x",
+    "java": ">=17"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}

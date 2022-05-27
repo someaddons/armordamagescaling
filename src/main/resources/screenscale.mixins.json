@@ -1,0 +1,16 @@
+{
+  "required": false,
+  "package": "com.screenscale.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+  ],
+  "client": [
+    "MinecraftMixin",
+    "SodiumGameOptionsMixin",
+    "VideoSettingsScreenMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8"
+}
