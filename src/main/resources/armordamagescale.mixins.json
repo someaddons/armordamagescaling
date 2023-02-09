@@ -2,6 +2,7 @@
   "required": false,
   "package": "com.armordamagescale.mixin",
   "compatibilityLevel": "JAVA_17",
+  "refmap": "armordamagescale.refmap.json",
   "mixins": [
     "LivingEntityArmorMixin"
   ],

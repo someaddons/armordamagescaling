@@ -16,7 +16,7 @@ public class CommonConfiguration
     public Expression thoughnessdamagereduction = null;
     public String toughnessFormula = "1/(" + FORMULA_TOUGHNESS_ARG + "/10+1)*" + FORMULA_HITPCT_ARG + "+(1-" + FORMULA_HITPCT_ARG + ")";
     public Expression playerdamagereduction = null;
-    public String playerdamageFormula = FORMULA_DAMAGE_ARG+"*(100/("+FORMULA_DAMAGE_ARG+"+100))";
+    public String playerdamageFormula = FORMULA_DAMAGE_ARG + "*(100/(" + FORMULA_DAMAGE_ARG + "+100))";
     public boolean debugprint = false;
 
     public CommonConfiguration()
@@ -41,7 +41,7 @@ public class CommonConfiguration
         root.add("toughnessFormula", entry2);
 
         final JsonObject entry4 = new JsonObject();
-        entry4.addProperty("desc:", "Player damage normalization, reduces too high player damage. Input values:"+FORMULA_DAMAGE_ARG+" . To disable put just: "+FORMULA_DAMAGE_ARG);
+        entry4.addProperty("desc:", "Player damage normalization, reduces too high player damage. Input values:" + FORMULA_DAMAGE_ARG + " . To disable put just: " + FORMULA_DAMAGE_ARG);
         entry4.addProperty("playerdamageFormula", playerdamageFormula);
         root.add("playerdamageFormula", entry4);
 
