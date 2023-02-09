@@ -8,6 +8,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -32,10 +33,15 @@ public abstract class LivingEntityArmorMixin
     public abstract float getMaxHealth();
 
     @Inject(method = "getDamageAfterArmorAbsorb", at = @At("HEAD"), cancellable = true)
-    private void armordamage$getDamageAfterArmorAbsorb(DamageSource damageSource, final float damage, CallbackInfoReturnable<Float> cir) throws EvaluationException, ParseException
+    private void armordamage$getDamageAfterArmorAbsorb(DamageSource damageSource, float damage, CallbackInfoReturnable<Float> cir) throws EvaluationException, ParseException
     {
         if (!damageSource.isBypassArmor())
         {
+            if (damageSource.getEntity() instanceof Player)
+            {
+                damage = ArmorDamage.config.getCommonConfig().playerdamagereduction.with(FORMULA_DAMAGE_ARG, damage).evaluate().getNumberValue().floatValue();
+            }
+
             hurtArmor(damageSource, damage);
             final float armorValue = getArmorValue();
 

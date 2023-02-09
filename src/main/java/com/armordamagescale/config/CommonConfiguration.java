@@ -9,11 +9,14 @@ public class CommonConfiguration
     public static final String FORMULA_ARMOR_ARG = "armor";
     public static final String FORMULA_TOUGHNESS_ARG = "toughness";
     public static final String FORMULA_HITPCT_ARG = "hitpct";
+    public static final String FORMULA_DAMAGE_ARG = "damage";
 
     public Expression armordamagereduction = null;
     public String armorFormula = "15/(" + FORMULA_ARMOR_ARG + "+15)";
     public Expression thoughnessdamagereduction = null;
     public String toughnessFormula = "1/(" + FORMULA_TOUGHNESS_ARG + "/10+1)*" + FORMULA_HITPCT_ARG + "+(1-" + FORMULA_HITPCT_ARG + ")";
+    public Expression playerdamagereduction = null;
+    public String playerdamageFormula = FORMULA_DAMAGE_ARG+"*(100/("+FORMULA_DAMAGE_ARG+"+100))";
     public boolean debugprint = false;
 
     public CommonConfiguration()
@@ -37,6 +40,11 @@ public class CommonConfiguration
         entry2.addProperty("toughnessFormula", toughnessFormula);
         root.add("toughnessFormula", entry2);
 
+        final JsonObject entry4 = new JsonObject();
+        entry4.addProperty("desc:", "Player damage normalization, reduces too high player damage. Input values:"+FORMULA_DAMAGE_ARG+" . To disable put just: "+FORMULA_DAMAGE_ARG);
+        entry4.addProperty("playerdamageFormula", playerdamageFormula);
+        root.add("playerdamageFormula", entry4);
+
         final JsonObject entry3 = new JsonObject();
         entry3.addProperty("desc:", "Set to true to enable log debug output, default: false.");
         entry3.addProperty("debugprint", debugprint);
@@ -58,6 +66,9 @@ public class CommonConfiguration
 
         toughnessFormula = data.get("toughnessFormula").getAsJsonObject().get("toughnessFormula").getAsString();
         thoughnessdamagereduction = new Expression(toughnessFormula);
+
+        playerdamageFormula = data.get("playerdamageFormula").getAsJsonObject().get("playerdamageFormula").getAsString();
+        playerdamagereduction = new Expression(playerdamageFormula);
 
         debugprint = data.get("debugprint").getAsJsonObject().get("debugprint").getAsBoolean();
     }
