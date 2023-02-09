@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "screenscale",
+  "id": "armordamagescale",
   "version": "${version}",
-  "name": "GUI scale Mod",
-  "description": "GUI Scale adds a seperate UI scale slider for menus",
+  "name": "Armor/Damage scale Mod",
+  "description": "Better scaling for armor and damage",
   "authors": [
     "Someaddons"
   ],
@@ -18,17 +18,17 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.screenscale.ScreenScale"
+      "com.armordamagescale.ArmorDamage"
     ]
   },
   "mixins": [
-    "screenscale.mixins.json"
+    "armordamagescale.mixins.json"
   ],
 
   "depends": {
     "fabricloader": ">=0.11.3",
     "fabric": "*",
-    "minecraft": "1.18.x",
+    "minecraft": "1.19.x",
     "java": ">=17"
   },
   "suggests": {

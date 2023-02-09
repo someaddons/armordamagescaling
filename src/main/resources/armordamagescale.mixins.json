@@ -1,13 +1,11 @@
 {
   "required": false,
-  "package": "com.screenscale.mixin",
+  "package": "com.armordamagescale.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "LivingEntityArmorMixin"
   ],
   "client": [
-    "MinecraftMixin",
-    "SodiumGameOptionsMixin",
-    "VideoSettingsScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1
