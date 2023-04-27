@@ -37,6 +37,13 @@ public abstract class LivingEntityArmorMixin
     {
         if (!damageSource.isBypassArmor())
         {
+            if (Float.isInfinite(damage) || Float.isNaN(damage))
+            {
+                ArmorDamage.LOGGER.warn("Bad damage value input:" + damage, new Exception());
+                cir.setReturnValue(0f);
+                return;
+            }
+
             if (damageSource.getEntity() instanceof Player)
             {
                 damage = ArmorDamage.config.getCommonConfig().playerdamagereduction.with(FORMULA_DAMAGE_ARG, damage).evaluate().getNumberValue().floatValue();
@@ -45,20 +52,18 @@ public abstract class LivingEntityArmorMixin
             hurtArmor(damageSource, damage);
             final float armorValue = getArmorValue();
 
-            ArmorDamage.config.getCommonConfig().armordamagereduction.with(FORMULA_ARMOR_ARG, armorValue);
-            float modamage = 0;
-
-            modamage = (float) (damage * ArmorDamage.config.getCommonConfig().armordamagereduction.evaluate().getNumberValue().floatValue());
-
+            float modamage = ArmorDamage.config.getCommonConfig().armordamagereduction.with(FORMULA_ARMOR_ARG, armorValue).with(FORMULA_DAMAGE_ARG, damage)
+                    .evaluate().getNumberValue().floatValue();
 
             final float toughness = (float) getAttributeValue(Attributes.ARMOR_TOUGHNESS);
             final float hitpct = Math.max(0, Math.min(1, modamage / getMaxHealth()));
 
             ArmorDamage.config.getCommonConfig().thoughnessdamagereduction.with(FORMULA_TOUGHNESS_ARG, toughness);
             ArmorDamage.config.getCommonConfig().thoughnessdamagereduction.with(FORMULA_HITPCT_ARG, hitpct);
-            modamage *= ArmorDamage.config.getCommonConfig().thoughnessdamagereduction.evaluate().getNumberValue().floatValue();
+            ArmorDamage.config.getCommonConfig().thoughnessdamagereduction.with(FORMULA_DAMAGE_ARG, modamage);
+            modamage = ArmorDamage.config.getCommonConfig().thoughnessdamagereduction.evaluate().getNumberValue().floatValue();
 
-            cir.setReturnValue(modamage);
+            cir.setReturnValue(Math.max(0.5f, modamage));
 
             if (ArmorDamage.config.getCommonConfig().debugprint)
             {

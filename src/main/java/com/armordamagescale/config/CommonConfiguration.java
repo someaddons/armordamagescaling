@@ -2,6 +2,7 @@ package com.armordamagescale.config;
 
 import com.armordamagescale.ArmorDamage;
 import com.ezylang.evalex.Expression;
+import com.google.common.util.concurrent.UncheckedExecutionException;
 import com.google.gson.JsonObject;
 
 public class CommonConfiguration
@@ -12,9 +13,9 @@ public class CommonConfiguration
     public static final String FORMULA_DAMAGE_ARG = "damage";
 
     public Expression armordamagereduction = null;
-    public String armorFormula = "15/(" + FORMULA_ARMOR_ARG + "+15)";
+    public String armorFormula = FORMULA_DAMAGE_ARG + "*15/(" + FORMULA_ARMOR_ARG + "+15)";
     public Expression thoughnessdamagereduction = null;
-    public String toughnessFormula = "1/(" + FORMULA_TOUGHNESS_ARG + "/10+1)*" + FORMULA_HITPCT_ARG + "+(1-" + FORMULA_HITPCT_ARG + ")";
+    public String toughnessFormula = FORMULA_DAMAGE_ARG + "*1/(" + FORMULA_TOUGHNESS_ARG + "/10+1)*" + FORMULA_HITPCT_ARG + "+(1-" + FORMULA_HITPCT_ARG + ")";
     public Expression playerdamagereduction = null;
     public String playerdamageFormula = FORMULA_DAMAGE_ARG + "*(100/(" + FORMULA_DAMAGE_ARG + "+100))";
     public boolean debugprint = false;
@@ -29,19 +30,18 @@ public class CommonConfiguration
         final JsonObject root = new JsonObject();
 
         final JsonObject entry = new JsonObject();
-        entry.addProperty("desc:", "Armor damage reduction formula, damage is multiplied by the value returned.Input value: " + FORMULA_ARMOR_ARG + " Default:15/(armor+15)");
+        entry.addProperty("desc:", "Armor damage reduction formula. Input values: " + FORMULA_ARMOR_ARG + "," + FORMULA_DAMAGE_ARG + " Default formula:" + armorFormula);
         entry.addProperty("armorFormula", armorFormula);
         root.add("armorFormula", entry);
 
         final JsonObject entry2 = new JsonObject();
-        entry2.addProperty("desc:", "Armor toughness now reduces damage in relation to percent health lost." +
-                " Armor toughness damage reduction formula, damage is multiplied by the value returned. " +
-                "Input values:" + FORMULA_HITPCT_ARG + "(0-1), " + FORMULA_TOUGHNESS_ARG + ". Default: 1/(toughness/10+1)*hitpct+(1-hitpct)");
+        entry2.addProperty("desc:", "Armor toughness reduces damage in relation to percent health lost." +
+                "Input values:" + FORMULA_HITPCT_ARG + "(0-1), " + FORMULA_TOUGHNESS_ARG + ", " + FORMULA_DAMAGE_ARG + ". Default: " + toughnessFormula);
         entry2.addProperty("toughnessFormula", toughnessFormula);
         root.add("toughnessFormula", entry2);
 
         final JsonObject entry4 = new JsonObject();
-        entry4.addProperty("desc:", "Player damage normalization, reduces too high player damage. Input values:" + FORMULA_DAMAGE_ARG + " . To disable put just: " + FORMULA_DAMAGE_ARG);
+        entry4.addProperty("desc:", "Player damage normalization, scales player damage caused to better balance modded weapons and combat. Input values:" + FORMULA_DAMAGE_ARG + " . To disable put just: " + FORMULA_DAMAGE_ARG);
         entry4.addProperty("playerdamageFormula", playerdamageFormula);
         root.add("playerdamageFormula", entry4);
 
@@ -66,6 +66,11 @@ public class CommonConfiguration
 
         toughnessFormula = data.get("toughnessFormula").getAsJsonObject().get("toughnessFormula").getAsString();
         thoughnessdamagereduction = new Expression(toughnessFormula);
+
+        if (!armorFormula.contains(FORMULA_DAMAGE_ARG) && !toughnessFormula.contains(FORMULA_DAMAGE_ARG))
+        {
+            throw new RuntimeException("Outdated config format, resetting config");
+        }
 
         playerdamageFormula = data.get("playerdamageFormula").getAsJsonObject().get("playerdamageFormula").getAsString();
         playerdamagereduction = new Expression(playerdamageFormula);
