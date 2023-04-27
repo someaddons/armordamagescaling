@@ -13,9 +13,9 @@ public class CommonConfiguration
     public static final String FORMULA_DAMAGE_ARG = "damage";
 
     public Expression armordamagereduction = null;
-    public String armorFormula = FORMULA_DAMAGE_ARG + "*15/(" + FORMULA_ARMOR_ARG + "+15)";
+    public String armorFormula = FORMULA_DAMAGE_ARG + "*(15/(" + FORMULA_ARMOR_ARG + "+15))";
     public Expression thoughnessdamagereduction = null;
-    public String toughnessFormula = FORMULA_DAMAGE_ARG + "*1/(" + FORMULA_TOUGHNESS_ARG + "/10+1)*" + FORMULA_HITPCT_ARG + "+(1-" + FORMULA_HITPCT_ARG + ")";
+    public String toughnessFormula = FORMULA_DAMAGE_ARG + "*(1/(" + FORMULA_TOUGHNESS_ARG + "/10+1)*" + FORMULA_HITPCT_ARG + "+(1-" + FORMULA_HITPCT_ARG + "))";
     public Expression playerdamagereduction = null;
     public String playerdamageFormula = FORMULA_DAMAGE_ARG + "*(100/(" + FORMULA_DAMAGE_ARG + "+100))";
     public boolean debugprint = false;
@@ -61,16 +61,19 @@ public class CommonConfiguration
             return;
         }
 
-        armorFormula = data.get("armorFormula").getAsJsonObject().get("armorFormula").getAsString();
+       String  armorFormula = data.get("armorFormula").getAsJsonObject().get("armorFormula").getAsString();
         armordamagereduction = new Expression(armorFormula);
 
-        toughnessFormula = data.get("toughnessFormula").getAsJsonObject().get("toughnessFormula").getAsString();
+        String toughnessFormula = data.get("toughnessFormula").getAsJsonObject().get("toughnessFormula").getAsString();
         thoughnessdamagereduction = new Expression(toughnessFormula);
 
         if (!armorFormula.contains(FORMULA_DAMAGE_ARG) && !toughnessFormula.contains(FORMULA_DAMAGE_ARG))
         {
             throw new RuntimeException("Outdated config format, resetting config");
         }
+
+        this.armorFormula = armorFormula;
+        this.toughnessFormula = toughnessFormula;
 
         playerdamageFormula = data.get("playerdamageFormula").getAsJsonObject().get("playerdamageFormula").getAsString();
         playerdamagereduction = new Expression(playerdamageFormula);

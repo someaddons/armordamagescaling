@@ -1,0 +1,16 @@
+{
+  "jars": [
+    {
+      "identifier": {
+        "group": "com.ezylang",
+        "artifact": "EvalEx"
+      },
+      "version": {
+        "range": "[2.0.1,4.0.0)",
+        "artifactVersion": "3.0.1"
+      },
+      "path": "META-INF/jarjar/EvalEx-3.0.1.jar",
+      "isObfuscated": false
+    }
+  ]
+}

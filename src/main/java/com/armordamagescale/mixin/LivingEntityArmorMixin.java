@@ -52,17 +52,24 @@ public abstract class LivingEntityArmorMixin
             hurtArmor(damageSource, damage);
             final float armorValue = getArmorValue();
 
-            float modamage = ArmorDamage.config.getCommonConfig().armordamagereduction.with(FORMULA_ARMOR_ARG, armorValue).with(FORMULA_DAMAGE_ARG, damage)
-                    .evaluate().getNumberValue().floatValue();
+            float modamage = damage;
+
+            if (armorValue > 0)
+            {
+                modamage = ArmorDamage.config.getCommonConfig().armordamagereduction.with(FORMULA_ARMOR_ARG, armorValue).with(FORMULA_DAMAGE_ARG, damage)
+                        .evaluate().getNumberValue().floatValue();
+            }
 
             final float toughness = (float) getAttributeValue(Attributes.ARMOR_TOUGHNESS);
-            final float hitpct = Math.max(0, Math.min(1, modamage / getMaxHealth()));
 
-            ArmorDamage.config.getCommonConfig().thoughnessdamagereduction.with(FORMULA_TOUGHNESS_ARG, toughness);
-            ArmorDamage.config.getCommonConfig().thoughnessdamagereduction.with(FORMULA_HITPCT_ARG, hitpct);
-            ArmorDamage.config.getCommonConfig().thoughnessdamagereduction.with(FORMULA_DAMAGE_ARG, modamage);
-            modamage = ArmorDamage.config.getCommonConfig().thoughnessdamagereduction.evaluate().getNumberValue().floatValue();
-
+            if (toughness > 0)
+            {
+                final float hitpct = Math.max(0, Math.min(1, modamage / getMaxHealth()));
+                ArmorDamage.config.getCommonConfig().thoughnessdamagereduction.with(FORMULA_TOUGHNESS_ARG, toughness);
+                ArmorDamage.config.getCommonConfig().thoughnessdamagereduction.with(FORMULA_HITPCT_ARG, hitpct);
+                ArmorDamage.config.getCommonConfig().thoughnessdamagereduction.with(FORMULA_DAMAGE_ARG, modamage);
+                modamage = ArmorDamage.config.getCommonConfig().thoughnessdamagereduction.evaluate().getNumberValue().floatValue();
+            }
             cir.setReturnValue(Math.max(0.5f, modamage));
 
             if (ArmorDamage.config.getCommonConfig().debugprint)
