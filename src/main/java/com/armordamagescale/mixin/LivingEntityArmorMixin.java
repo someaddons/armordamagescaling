@@ -3,6 +3,7 @@ package com.armordamagescale.mixin;
 import com.armordamagescale.ArmorDamage;
 import com.ezylang.evalex.EvaluationException;
 import com.ezylang.evalex.parser.ParseException;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.CombatRules;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -35,7 +36,7 @@ public abstract class LivingEntityArmorMixin
     @Inject(method = "getDamageAfterArmorAbsorb", at = @At("HEAD"), cancellable = true)
     private void armordamage$getDamageAfterArmorAbsorb(DamageSource damageSource, float damage, CallbackInfoReturnable<Float> cir) throws EvaluationException, ParseException
     {
-        if (!damageSource.isBypassArmor())
+        if (!damageSource.is(DamageTypeTags.BYPASSES_ARMOR))
         {
             if (Float.isInfinite(damage) || Float.isNaN(damage))
             {
