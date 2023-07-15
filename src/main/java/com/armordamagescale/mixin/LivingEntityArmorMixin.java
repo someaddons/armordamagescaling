@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import static com.armordamagescale.config.CommonConfiguration.*;
@@ -32,6 +33,17 @@ public abstract class LivingEntityArmorMixin
     @Shadow
     public abstract float getMaxHealth();
 
+    @ModifyVariable(method = "actuallyHurt", argsOnly = true, at = @At("HEAD"), ordinal = 0)
+    private float brutalbosses$onhurt(float damageOrg, final DamageSource source, final float damage) throws EvaluationException, ParseException
+    {
+        if (source.getEntity() instanceof Player)
+        {
+            return ArmorDamage.config.getCommonConfig().playerdamagereduction.with(FORMULA_DAMAGE_ARG, damageOrg).evaluate().getNumberValue().floatValue();
+        }
+
+        return damageOrg;
+    }
+
     @Inject(method = "getDamageAfterArmorAbsorb", at = @At("HEAD"), cancellable = true)
     private void armordamage$getDamageAfterArmorAbsorb(DamageSource damageSource, float damage, CallbackInfoReturnable<Float> cir) throws EvaluationException, ParseException
     {
@@ -44,10 +56,6 @@ public abstract class LivingEntityArmorMixin
                 return;
             }
 
-            if (damageSource.getEntity() instanceof Player)
-            {
-                damage = ArmorDamage.config.getCommonConfig().playerdamagereduction.with(FORMULA_DAMAGE_ARG, damage).evaluate().getNumberValue().floatValue();
-            }
 
             hurtArmor(damageSource, damage);
             final float armorValue = getArmorValue();
