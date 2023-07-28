@@ -82,6 +82,7 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
+    mavenLocal()
     maven {
         url "https://www.cursemaven.com"
     }
@@ -99,6 +100,7 @@ dependencies {
 
     minecraftLibrary('com.ezylang:EvalEx:3.0.1')
    // jarJar(group:'com.ezylang',name:'EvalEx', version:'[2.0.1,4.0.0)')
+    implementation fg.deobf("com.cupboard:cupboard:1.19.2-1.5")
 }
 
 jar {

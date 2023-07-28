@@ -1,11 +1,11 @@
 package com.armordamagescale.config;
 
 import com.armordamagescale.ArmorDamage;
+import com.cupboard.config.ICommonConfig;
 import com.ezylang.evalex.Expression;
-import com.google.common.util.concurrent.UncheckedExecutionException;
 import com.google.gson.JsonObject;
 
-public class CommonConfiguration
+public class CommonConfiguration implements ICommonConfig
 {
     public static final String FORMULA_ARMOR_ARG = "armor";
     public static final String FORMULA_TOUGHNESS_ARG = "toughness";
@@ -61,7 +61,7 @@ public class CommonConfiguration
             return;
         }
 
-       String  armorFormula = data.get("armorFormula").getAsJsonObject().get("armorFormula").getAsString();
+        String armorFormula = data.get("armorFormula").getAsJsonObject().get("armorFormula").getAsString();
         armordamagereduction = new Expression(armorFormula);
 
         String toughnessFormula = data.get("toughnessFormula").getAsJsonObject().get("toughnessFormula").getAsString();
