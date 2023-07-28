@@ -1,6 +1,7 @@
 package com.armordamagescale;
 
-import com.armordamagescale.config.Configuration;
+import com.armordamagescale.config.CommonConfiguration;
+import com.cupboard.config.CupboardConfig;
 import net.fabricmc.api.ModInitializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -8,17 +9,20 @@ import org.apache.logging.log4j.Logger;
 import java.util.Random;
 
 // The value here should match an entry in the META-INF/mods.toml file
-public class ArmorDamage implements ModInitializer {
+public class ArmorDamage implements ModInitializer
+{
     public static final String MODID = "armordamagescale";
     public static final Logger LOGGER = LogManager.getLogger();
-    public static Configuration config = new Configuration();
+    public static CupboardConfig<CommonConfiguration> config = new CupboardConfig<>(MODID, new CommonConfiguration());
     public static Random rand = new Random();
 
-    public ArmorDamage() {
+    public ArmorDamage()
+    {
     }
 
     @Override
-    public void onInitialize() {
+    public void onInitialize()
+    {
         config.load();
         LOGGER.info(MODID + " mod initialized");
     }
