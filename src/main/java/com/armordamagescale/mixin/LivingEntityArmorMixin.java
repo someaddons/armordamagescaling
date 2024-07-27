@@ -3,6 +3,7 @@ package com.armordamagescale.mixin;
 import com.armordamagescale.ArmorDamage;
 import com.ezylang.evalex.EvaluationException;
 import com.ezylang.evalex.parser.ParseException;
+import net.minecraft.core.Holder;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -36,10 +37,9 @@ public abstract class LivingEntityArmorMixin extends Entity
     public abstract int getArmorValue();
 
     @Shadow
-    public abstract double getAttributeValue(Attribute attribute);
-
-    @Shadow
     public abstract float getMaxHealth();
+
+    @Shadow public abstract double getAttributeValue(Holder<Attribute> p_251296_);
 
     @ModifyVariable(method = "actuallyHurt", argsOnly = true, at = @At("HEAD"), ordinal = 0)
     private float brutalbosses$onhurt(float damageOrg, final DamageSource source, final float damage) throws EvaluationException, ParseException
