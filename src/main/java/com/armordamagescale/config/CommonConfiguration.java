@@ -41,7 +41,7 @@ public class CommonConfiguration implements ICommonConfig
         root.add("toughnessFormula", entry2);
 
         final JsonObject entry4 = new JsonObject();
-        entry4.addProperty("desc:", "Player damage normalization, scales player damage caused to better balance modded weapons and combat. Input values:" + FORMULA_DAMAGE_ARG + " . To disable put just: " + FORMULA_DAMAGE_ARG);
+        entry4.addProperty("desc:", "Player damage normalization, scales player damage caused to better balance modded weapons and combat. Input values:" + FORMULA_DAMAGE_ARG + " . To disable put just: " + FORMULA_DAMAGE_ARG + " Default formula:"+playerdamageFormula);
         entry4.addProperty("playerdamageFormula", playerdamageFormula);
         root.add("playerdamageFormula", entry4);
 

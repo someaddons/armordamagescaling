@@ -1,91 +1,92 @@
 plugins {
-	id 'fabric-loom' version "${loom_version}"
-	id 'maven-publish'
-	id 'io.github.juuxel.loom-quiltflower' version "${quiltflower_version}"
-	id 'com.github.johnrengelman.shadow' version '7.1.2' apply false
-}
-
-quiltflower {
-	addToRuntimeClasspath.set(true)
+    id 'fabric-loom' version "${loom_version}"
+    id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '7.1.2' apply false
 }
 
 var ENV = System.getenv()
 
 if (ENV.MCMC_BUILD_NUMBER) {
-	version = "${mod_version}.${ENV.MCMC_BUILD_NUMBER}"
+    version = "${mod_version}.${ENV.MCMC_BUILD_NUMBER}"
 } else {
-	version = project.minecraft_version + "-" + project.mod_version
+    version = project.minecraft_version + "-" + project.mod_version
 }
 
 group = project.maven_group
 
 loom {
-	accessWidenerPath = file("src/main/resources/${project.archives_base_name}.accessWidener")
+    accessWidenerPath = file("src/main/resources/${project.archives_base_name}.accessWidener")
 }
 
 repositories {
-	mavenLocal()
-	flatDir { dirs 'libs' }
-	mavenCentral()
+    mavenLocal()
+    flatDir { dirs 'libs' }
+    mavenCentral()
 
-	maven {
-		url "https://www.cursemaven.com"
-		content {
-			includeGroup "curse.maven"
-		}
-	}
+    maven {
+        url "https://www.cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings loom.officialMojangMappings()
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings loom.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    modImplementation("curse.maven:cupboard-326652:5477517")
     implementation('com.ezylang:EvalEx:3.0.1')
     include('com.ezylang:EvalEx:3.0.1')
-
-	// Fabric API. This is technically optional, but you probably want it anyway.
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	modImplementation "curse.maven:cupboard-326652:4666960"
 }
 
 loom {
-	runs {
-		client {
-			programArg '--username=Dev'
-			programArg '--uuid=123123123123123'
-			vmArg '-Dmixin.debug=true'
-		}
-		server {
-			runDir = "runserver"
-		}
-	}
+    runs {
+        client {
+            programArg '--username=Dev'
+            programArg '--uuid=c2f44529-eb64-40d0-b970-5ad748c7b377'
+            vmArg '-Dmixin.debug=true'
+        }
+        server {
+            runDir = "runserver"
+            vmArg '-Dmixin.debug=true'
+        }
+    }
 }
 
 processResources {
-	inputs.property "version", project.version
-	filteringCharset "UTF-8"
+    inputs.property "version", project.version
 
-	filesMatching("fabric.mod.json") {
-		expand "version": project.version
-	}
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
 }
 
-def targetJavaVersion = 17
 tasks.withType(JavaCompile).configureEach {
-	it.options.encoding = "UTF-8"
-	if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
-		it.options.release = targetJavaVersion
-	}
+    it.options.release = 21
 }
 
 java {
-	def javaVersion = JavaVersion.toVersion(targetJavaVersion)
-	if (JavaVersion.current() < javaVersion) {
-		toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
-	}
-	archivesBaseName =  project.archives_base_name + "-fabric"
-	withSourcesJar()
+    archivesBaseName =  project.archives_base_name + "-fabric"
+    withSourcesJar()
+
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
+
 publishing {
+    publications {
+        register('mavenJava', MavenPublication) {
+            artifact jar
+        }
+    }
+}
+
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
 }
