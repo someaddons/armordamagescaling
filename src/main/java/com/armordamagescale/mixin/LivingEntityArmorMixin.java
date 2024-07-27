@@ -40,7 +40,7 @@ public abstract class LivingEntityArmorMixin extends Entity
     public abstract float getMaxHealth();
 
     @Shadow
-    public abstract double getAttributeValue(Holder<Attribute> holder);
+    public abstract double getAttributeValue(Attribute attribute);
 
     @ModifyVariable(method = "actuallyHurt", argsOnly = true, at = @At("HEAD"), ordinal = 0)
     private float brutalbosses$onhurt(float damageOrg, final DamageSource source, final float damage) throws EvaluationException, ParseException
