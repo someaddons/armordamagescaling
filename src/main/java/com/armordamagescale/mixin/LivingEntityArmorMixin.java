@@ -46,6 +46,12 @@ public abstract class LivingEntityArmorMixin extends Entity
     {
         if (source.getEntity() instanceof Player)
         {
+            if (Float.isInfinite(damageOrg) || Float.isNaN(damageOrg) || damageOrg < 0)
+            {
+                ArmorDamage.LOGGER.warn("Bad damage value input:" + damageOrg, new Exception());
+                return 0f;
+            }
+
             final float normalizedDamage = ArmorDamage.config.getCommonConfig().playerdamagereduction.with(FORMULA_DAMAGE_ARG, damageOrg).evaluate().getNumberValue().floatValue();
             if (ArmorDamage.config.getCommonConfig().debugprint)
             {
