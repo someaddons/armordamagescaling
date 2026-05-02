@@ -51,7 +51,7 @@ public abstract class LivingEntityArmorMixin extends Entity
     protected Stack<DamageContainer> damageContainers;
 
     @ModifyVariable(method = "actuallyHurt", argsOnly = true, at = @At("HEAD"), ordinal = 0)
-    private float brutalbosses$onhurt(float damageOrg, final DamageSource source, final float damage) throws EvaluationException, ParseException
+    private float armordamage$onhurt(float damageOrg, final DamageSource source, final float damage) throws EvaluationException, ParseException
     {
         if (source.getEntity() instanceof Player)
         {

@@ -108,7 +108,7 @@ configurations {
 
 dependencies {
     implementation "curse.maven:cupboard-326652:6078150"
-    implementation('com.ezylang:EvalEx:3.0.1')
+    additionalRuntimeClasspath('com.ezylang:EvalEx:3.0.1')
     jarJar(implementation("com.ezylang:EvalEx")) {
         version {
             // The version range your mod is actually compatible with.
