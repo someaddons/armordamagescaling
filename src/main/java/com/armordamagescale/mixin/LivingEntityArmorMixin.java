@@ -13,12 +13,16 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import javax.annotation.Nullable;
+import java.util.Stack;
 
 import static com.armordamagescale.config.CommonConfiguration.*;
 
@@ -39,7 +43,12 @@ public abstract class LivingEntityArmorMixin extends Entity
     @Shadow
     public abstract float getMaxHealth();
 
-    @Shadow public abstract double getAttributeValue(Holder<Attribute> p_251296_);
+    @Shadow
+    public abstract double getAttributeValue(Holder<Attribute> p_251296_);
+
+    @Shadow
+    @Nullable
+    protected Stack<DamageContainer> damageContainers;
 
     @ModifyVariable(method = "actuallyHurt", argsOnly = true, at = @At("HEAD"), ordinal = 0)
     private float brutalbosses$onhurt(float damageOrg, final DamageSource source, final float damage) throws EvaluationException, ParseException
@@ -52,12 +61,18 @@ public abstract class LivingEntityArmorMixin extends Entity
                 return 0f;
             }
 
-            final float normalizedDamage = ArmorDamage.config.getCommonConfig().playerdamagereduction.with(FORMULA_DAMAGE_ARG, damageOrg).evaluate().getNumberValue().floatValue();
-            if (ArmorDamage.config.getCommonConfig().debugprint)
+            float normalizedDamage = damageOrg;
+            if (!damageContainers.empty())
             {
-                ArmorDamage.LOGGER.info("Normalizing player damage from: " + damage + " to:" + normalizedDamage);
-            }
+                damageOrg = damageContainers.peek().getNewDamage();
+                normalizedDamage = ArmorDamage.config.getCommonConfig().playerdamagereduction.with(FORMULA_DAMAGE_ARG, damageOrg).evaluate().getNumberValue().floatValue();
+                if (ArmorDamage.config.getCommonConfig().debugprint)
+                {
+                    ArmorDamage.LOGGER.info("Normalizing player damage from: " + damage + " to:" + normalizedDamage);
+                }
 
+                damageContainers.peek().setNewDamage(normalizedDamage);
+            }
             return normalizedDamage;
         }
 
@@ -90,7 +105,7 @@ public abstract class LivingEntityArmorMixin extends Entity
             if (armorValue > 0)
             {
                 modamage = ArmorDamage.config.getCommonConfig().armordamagereduction.with(FORMULA_ARMOR_ARG, armorValue).with(FORMULA_DAMAGE_ARG, damage)
-                        .evaluate().getNumberValue().floatValue();
+                    .evaluate().getNumberValue().floatValue();
                 if (ArmorDamage.config.getCommonConfig().debugprint)
                 {
                     log += ", Armorvalue:" + armorValue + ", dmg after armor reduction:" + modamage;
