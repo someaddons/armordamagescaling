@@ -4,6 +4,7 @@ import com.armordamagescale.ArmorDamage;
 import com.ezylang.evalex.EvaluationException;
 import com.ezylang.evalex.parser.ParseException;
 import net.minecraft.core.Holder;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -51,7 +52,7 @@ public abstract class LivingEntityArmorMixin extends Entity
     protected Stack<DamageContainer> damageContainers;
 
     @ModifyVariable(method = "actuallyHurt", argsOnly = true, at = @At("HEAD"), ordinal = 0)
-    private float armordamage$onhurt(float damageOrg, final DamageSource source, final float damage) throws EvaluationException, ParseException
+    private float armordamage$onhurt(float damageOrg, final ServerLevel level, final DamageSource source, final float damage) throws EvaluationException, ParseException
     {
         if (source.getEntity() instanceof Player)
         {
