@@ -6,6 +6,7 @@ import com.ezylang.evalex.parser.ParseException;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -13,6 +14,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -81,7 +84,7 @@ public abstract class LivingEntityArmorMixin extends Entity
     }
 
     @Inject(method = "getDamageAfterArmorAbsorb", at = @At("HEAD"), cancellable = true)
-    private void armordamage$getDamageAfterArmorAbsorb(DamageSource damageSource, float damage, CallbackInfoReturnable<Float> cir) throws EvaluationException, ParseException
+    private void armordamage$getDamageAfterArmorAbsorb(DamageSource damageSource, final float damage, CallbackInfoReturnable<Float> cir) throws EvaluationException, ParseException
     {
         if (!damageSource.is(DamageTypeTags.BYPASSES_ARMOR))
         {
@@ -89,6 +92,11 @@ public abstract class LivingEntityArmorMixin extends Entity
             {
                 ArmorDamage.LOGGER.warn("Bad damage value input:" + damage, new Exception());
                 cir.setReturnValue(0f);
+                return;
+            }
+
+            if (damage <= 0)
+            {
                 return;
             }
 
@@ -128,6 +136,20 @@ public abstract class LivingEntityArmorMixin extends Entity
                     log += " Toughnessvalue:" + toughness + " dmg after toughness reduction:" + modamage;
                 }
             }
+
+            // TODO: Recheck vanilla logic when minecraft versions change
+            final ItemStack weaponItem = damageSource.getWeaponItem();
+            if (weaponItem != null && this.level() instanceof ServerLevel level)
+            {
+                float damageReduction = 1.0f - (modamage / damage);
+                damageReduction = Mth.clamp(EnchantmentHelper.modifyArmorEffectiveness(level, weaponItem, this, damageSource, damageReduction), 0.0F, 1.0F);
+                modamage = damage *(1.0f - damageReduction);
+                if (ArmorDamage.config.getCommonConfig().debugprint)
+                {
+                    log += " Enchantment armor effectiveness reduction, dmg after:" + modamage;
+                }
+            }
+
             cir.setReturnValue(Math.max(0.5f, modamage));
 
             if (ArmorDamage.config.getCommonConfig().debugprint && !log.isEmpty())
