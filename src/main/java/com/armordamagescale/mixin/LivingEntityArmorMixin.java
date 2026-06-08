@@ -112,7 +112,7 @@ public abstract class LivingEntityArmorMixin extends Entity
                     log += " Toughnessvalue:" + toughness + " dmg after toughness reduction:" + modamage;
                 }
             }
-            cir.setReturnValue(Math.max(0.5f, modamage));
+            cir.setReturnValue(Math.max(0.0f, modamage));
 
             if (ArmorDamage.config.getCommonConfig().debugprint && !log.isEmpty())
             {
