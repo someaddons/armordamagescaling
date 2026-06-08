@@ -107,7 +107,7 @@ configurations {
 }
 
 dependencies {
-    implementation "curse.maven:cupboard-326652:6078150"
+    implementation "curse.maven:cupboard-326652:8217735"
     additionalRuntimeClasspath('com.ezylang:EvalEx:3.0.1')
     jarJar(implementation("com.ezylang:EvalEx")) {
         version {
