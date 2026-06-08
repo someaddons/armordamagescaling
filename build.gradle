@@ -99,7 +99,7 @@ dependencies {
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
 
     minecraftLibrary('com.ezylang:EvalEx:3.0.1')
-    implementation fg.deobf("com.cupboard:cupboard:1.20.1-1.5")
+    implementation fg.deobf("curse.maven:cupboard-326652:7905744")
    // jarJar(group:'com.ezylang',name:'EvalEx', version:'[2.0.1,4.0.0)')
 }
 

@@ -76,6 +76,11 @@ public abstract class LivingEntityArmorMixin extends Entity
                 return;
             }
 
+            if (damage <= 0)
+            {
+                return;
+            }
+
             String log = "";
             if (ArmorDamage.config.getCommonConfig().debugprint)
             {
