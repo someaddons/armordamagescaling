@@ -3,7 +3,9 @@
   "package": "com.armordamagescale.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "LivingEntityArmorMixin"
+    "CombatRulesMixin",
+    "LivingEntityArmorMixin",
+    "ProtectionLevelsMixin"
   ],
   "client": [
   ],
